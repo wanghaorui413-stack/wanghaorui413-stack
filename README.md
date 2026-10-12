@@ -71,8 +71,8 @@ I build practical tools at the intersection of **AI, data, product thinking, and
 
 <img src="https://streak-stats.demolab.com?user=wanghaorui413-stack&hide_border=true&background=00000000&ring=38BDF8&fire=22C55E&currStreakLabel=38BDF8&sideLabels=94A3B8&dates=64748B&currStreakNum=E2E8F0&sideNums=E2E8F0" alt="GitHub streak">
 
-![Contribution Snake](https://raw.githubusercontent.com/wanghaorui413-stack/wanghaorui413-stack/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only)
-![Contribution Snake](https://raw.githubusercontent.com/wanghaorui413-stack/wanghaorui413-stack/output/github-contribution-grid-snake.svg#gh-light-mode-only)
+![Contribution Snake](https://raw.githubusercontent.com/wanghaorui413-stack/wanghaorui413-stack/gh-pages/github-contribution-grid-snake-dark.svg#gh-dark-mode-only)
+![Contribution Snake](https://raw.githubusercontent.com/wanghaorui413-stack/wanghaorui413-stack/gh-pages/github-contribution-grid-snake.svg#gh-light-mode-only)
 
 </div>
 
