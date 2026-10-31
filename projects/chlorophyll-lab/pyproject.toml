@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chlorophyll-lab"
+version = "0.2.0"
+description = "Reproducible chlorophyll-a research and local spectral inference"
+requires-python = ">=3.12"
+dependencies = ["numpy>=2,<3", "pandas>=2.2,<4", "torch>=2.6,<3", "scikit-learn>=1.5,<2"]
+
+[project.optional-dependencies]
+satellite = ["rasterio>=1.4,<2", "xarray>=2024.1", "netCDF4>=1.7", "pyproj>=3.6"]
+dev = ["pytest>=8", "ruff>=0.9", "build>=1", "wheel"]
+
+[project.scripts]
+chlorophyll = "chlorophyll.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["chlorophyll*"]
+
+[tool.setuptools.package-data]
+chlorophyll = ["assets/*.html"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]

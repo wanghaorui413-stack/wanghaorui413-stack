@@ -1,0 +1,15 @@
+{
+  "valid_pixels": 124,
+  "total_pixels": 35055,
+  "coverage_fraction": 0.0035372985308800456,
+  "min_ug_l": 1.510982632637024,
+  "median_ug_l": 7.5501179695129395,
+  "max_ug_l": 36.7252311706543,
+  "crs": "EPSG:32652",
+  "resolution_m": [
+    20.0,
+    20.0
+  ],
+  "concentration_geotiff_sha256": "dca0dfb6b2dd1dcac62b3d71e1d6c5a7b99bd65b7d2190e34df07f4046926d65",
+  "mask_sha256": "6a5d35b0f0185bd6f42e08381b4cba561266f4010fbb76c85c8f2247dc0549f6"
+}

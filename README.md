@@ -52,6 +52,17 @@ I build practical tools at the intersection of **AI, data, product thinking, and
   </tr>
 </table>
 
+
+## 🌊 Chlorophyll Lab — 叶绿素浓度研究工程
+
+[**查看源码、运行步骤与真实卫星示例 →**](https://github.com/wanghaorui413-stack/wanghaorui413-stack/tree/main/projects/chlorophyll-lab)
+
+Real GLORIA spectra → MLP / 1D CNN experiments → reproducible evaluation and model packaging. A separate Sentinel-2 L1C → ACOLITE → seven-band model pipeline produces 20 m GeoTIFFs with quality masks and provenance.
+
+`Python` · `PyTorch` · `scikit-learn` · `Rasterio` · `Sentinel-2` · `ACOLITE`
+
+**32 local tests passed** on Windows / Python 3.12 / CPU. The real satellite example retains **124 / 35,055 pixels (0.35%)** after strict quality filtering; satellite concentration accuracy awaits independent in-situ matchup validation. GLORIA scores are historical development results, not a fresh external blind test.
+
 ## Toolbox
 
 <div align="center">

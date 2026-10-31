@@ -1,0 +1,9 @@
+{
+  "dataset": "gloria_v2",
+  "run": "gloria_my_engineering_run",
+  "epochs": 100,
+  "patience": 15,
+  "lr": 0.001,
+  "batch_size": 64,
+  "seed": 42
+}
