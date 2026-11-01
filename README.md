@@ -8,65 +8,80 @@
 
 </div>
 
-## 👋 关于我
+## 👋 你好，我是 Austin
 
-我把模糊的需求做成**可验证的 AI 产品原型**：先定义用户问题和约束，再决定哪些交给模型、哪些必须由规则兜底，最后用评测数据说话。
+我在找 AI 产品经理方向的工作。
 
-- 🧭 **产品**：写 PRD、拆需求、设计评测指标，用 bad case 驱动迭代
-- 🤖 **AI**：RAG、检索与排序、结构化输出校验，把概率性生成和确定性规则分层处理
-- 🌊 **数据与科研**：海洋水色遥感、叶绿素 a 浓度反演、地形 Rossby 波研究
+我喜欢接手那种一句话说不清楚的需求：先弄明白用户卡在哪里，再把它拆成规则、流程和能检查的结果。做旅行规划工具时，我没有让大模型直接写行程，而是只让它补充推荐理由，预算和每天走多少地方交给规则来算。这样出来的方案超没超预算、排得满不满，都能自动检查。
 
-> **先想清楚，再量化；人始终在回路里。**
+这些项目的代码大多是借助 AI 写的。需求怎么拆、规则怎么定、结果怎么验证，是我自己花心思的部分。
 
-## 🚀 精选项目
+另外我做过海洋数据方面的研究，包括地形 Rossby 波，最近在做叶绿素浓度的遥感反演。
 
-### 🧳 [AI Trip Planner](https://github.com/wanghaorui413-stack/ai-trip-planner) · RAG 旅行规划 MVP
+## 🚀 做过的项目
 
-<p align="center"><img src="https://raw.githubusercontent.com/wanghaorui413-stack/ai-trip-planner/main/assets/screenshots/results.png" width="88%" alt="AI Trip Planner 多方案排序结果" /></p>
+### 🧳 [AI Trip Planner](https://github.com/wanghaorui413-stack/ai-trip-planner) · RAG 旅行规划
 
-- **问题**：通用大模型生成的行程常常预算失控、节奏过载、输出无法自动评测。
-- **做法**：RAG 只负责补充推荐理由；预算估算、候选生成、排序和校验交给确定性模块，输出结构化方案。从 [PRD](https://github.com/wanghaorui413-stack/ai-trip-planner/blob/main/docs/PRD.md)、指标定义到[离线评测脚本](https://github.com/wanghaorui413-stack/ai-trip-planner/blob/main/docs/EVALUATION.md)完整闭环。
-- **结果**：24 个合成场景离线评测，**20 个通过，平均分 0.943**。4 个未通过的用例都是"体验优先"方案超预算不到 5%，已列为下一轮迭代点。
+<table>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/wanghaorui413-stack/ai-trip-planner/main/assets/screenshots/home.png" alt="填写目的地、预算和偏好" /></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/wanghaorui413-stack/ai-trip-planner/main/assets/screenshots/results.png" alt="多套行程方案对比" /></td>
+  </tr>
+</table>
+
+填好目的地、天数、预算和偏好，它会给出几套可以比较的行程，每套都带预算拆分和每天的路线。
+
+通用大模型很容易给出"好玩但超预算"的方案，所以 RAG 在这里只负责补充推荐理由，预算核算、排序和校验都交给规则。我还写了 [PRD](https://github.com/wanghaorui413-stack/ai-trip-planner/blob/main/docs/PRD.md) 和一套[离线评测](https://github.com/wanghaorui413-stack/ai-trip-planner/blob/main/docs/EVALUATION.md)：24 个合成场景里通过了 20 个，平均分 0.943。没通过的 4 个都是"体验优先"方案超预算不到 5%，这是下一步要修的地方。
 
 `Python` `FastAPI` `Streamlit` `FAISS` `LangChain` `Docker`
 
-<sub>当前为 mock 数据阶段，评测结果不代表真实用户表现。</sub>
+<sub>目前用的是 mock 数据，评测结果不代表真实用户表现。</sub>
 
-### 🌊 [Chlorophyll Lab](projects/chlorophyll-lab) · 叶绿素 a 浓度研究工程
+### 🌊 [Chlorophyll Lab](projects/chlorophyll-lab) · 叶绿素 a 浓度研究
 
 <p align="center"><img src="assets/chlorophyll-preview.png" width="88%" alt="Sentinel-2 校正反射率与有效像元浓度估计" /></p>
 
-- **问题**：从光谱估算水体叶绿素浓度，而且结论要经得起复现和审查。
-- **做法**：GLORIA 实测光谱（质控后 3,385 条）→ 来源与水体分组隔离 → MLP / 1D CNN 对比选模 → 冻结评估。另一条管线把 Sentinel-2 L1C 经 ACOLITE 大气校正，输出带质量掩膜和溯源信息的 20 m 浓度 GeoTIFF。
-- **结果**：保留集 log10 RMSE **0.2387**；**32 项本地测试通过**；卫星样例严格质检后保留 **124 / 35,055 像元（0.35%）**。
+这是我的科研项目：用水体的光谱估算叶绿素 a 浓度。
+
+我在 GLORIA 实测光谱（质控后 3,385 条）上比较了 MLP 和 1D CNN，保留集 log10 RMSE 是 0.2387。另外搭了一条卫星处理流程：Sentinel-2 原始影像经过 ACOLITE 大气校正，输出带质量掩膜和溯源信息的 20 m 浓度图。在汉江的样例里，严格质检后只剩 124 / 35,055 个像元可用，所以它证明的是流程能跑通，还不能当成一张完整的水质图。项目里的 32 项本地测试都能通过。
 
 `Python` `PyTorch` `scikit-learn` `Rasterio` `Sentinel-2` `ACOLITE`
 
-<sub>log10 RMSE 为历史开发评估，不是外部盲测；卫星浓度精度仍待独立实测匹配验证。</sub>
+<sub>log10 RMSE 是历史开发评估，不是外部盲测；卫星浓度的精度还要和现场实测数据对比验证。</sub>
 
 ### 🖐️ [手势驱动的 3D 记忆相册](https://github.com/wanghaorui413-stack/gesture-memory-gallery) · Gesture Memory Gallery
 
-<p align="center"><img src="https://raw.githubusercontent.com/wanghaorui413-stack/gesture-memory-gallery/main/docs/assets/preview-desktop.png" width="88%" alt="3D 记忆相册预览" /></p>
+<table>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/wanghaorui413-stack/gesture-memory-gallery/main/docs/assets/preview-desktop.png" alt="粒子蛋糕主场景" /></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/wanghaorui413-stack/gesture-memory-gallery/main/docs/assets/preview-scatter.jpg" alt="张开手，照片从蛋糕里散开" /></td>
+  </tr>
+</table>
 
-- **问题**：一份生日礼物，想做得有仪式感、能放自己的照片、不用鼠标也能玩。
-- **做法**：Three.js 粒子场景统一管理蛋糕、星光和照片；MediaPipe 在浏览器端识别手势：张开手散开照片、握拳回到蛋糕、捏合放大、挥手旋转。阈值按掌宽归一化，并用多帧确认过滤抖动。
-- **结果**：照片只存在本地，可打包成一个 HTML 文件直接发送；没有摄像头时，按钮和触屏拖动也能完成全部操作。
+一开始是给妹妹做的生日礼物。打开是一个由粒子组成的 3D 蛋糕：张开手，照片从蛋糕里散开；握拳收回；捏合手指放大其中一张。
+
+手势识别用 MediaPipe 直接在浏览器里跑。为了减少手抖带来的误触，我按掌宽来定判断阈值，并且要求连续几帧都识别到同一个手势才算数。没有摄像头也能用按钮和触屏操作。做好之后可以打包成一个 HTML 文件，对方双击就能打开。
 
 `Three.js` `MediaPipe` `Vite` `JavaScript` `Canvas`
 
-### 🧩 其他小工具
+<sub>截图里的照片是示意图。</sub>
 
-- [**IELTS Writing Coach**](https://github.com/wanghaorui413-stack/IELTS-Writing)：雅思写作工作台，集成题目筛选、限时写作、结构引导和实时规则反馈
-- [**Daily Balance Planner**](https://github.com/wanghaorui413-stack/self-work-station)：按权重分配备考和科研时间，用近 7 天记录找出长期失衡的模块
+### 🧩 两个顺手做的小工具
 
-## 🧭 我怎么做产品
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="https://raw.githubusercontent.com/wanghaorui413-stack/IELTS-Writing/main/assets/screenshots/01-dashboard.png" alt="IELTS Writing Coach 写作工作台" />
+      <p><a href="https://github.com/wanghaorui413-stack/IELTS-Writing"><b>IELTS Writing Coach</b></a><br />备考雅思时做的写作工作台。选题、写前提纲、限时写作和自查放在同一个页面里，写的时候就能看到词数、连接词和常见语法错误的提醒。</p>
+    </td>
+    <td width="50%" valign="top">
+      <img src="https://raw.githubusercontent.com/wanghaorui413-stack/self-work-station/main/docs/screenshots/01-overview.png" alt="Daily Balance Planner 每日计划" />
+      <p><a href="https://github.com/wanghaorui413-stack/self-work-station"><b>Daily Balance Planner</b></a><br />同时备考和做科研，经常一整天只顾一头。它先给每个任务留出最低时间，剩下的按权重分配，再用近 7 天的记录找出总被跳过的那一项。</p>
+    </td>
+  </tr>
+</table>
 
-1. **从用户问题出发**，先写清楚约束
-2. **把概率性的 AI 行为和确定性的业务规则分开**
-3. **让输出可检查**：校验、警告、评测用例缺一不可
-4. **如实记录取舍**，让原型有机会长成真正的产品
-
-## 🧰 工具箱
+## 🧰 常用工具
 
 <p>
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
@@ -81,8 +96,6 @@
   <img src="https://img.shields.io/badge/MATLAB-0076A8?style=for-the-badge&logo=mathworks&logoColor=white" alt="MATLAB" />
 </p>
 
-**产品能力**：PRD 撰写 · 需求拆解 · 指标与评测设计 · 原型验证 · 数据分析
-
 ## 🐍 贡献轨迹
 
 <picture>
@@ -92,6 +105,6 @@
 
 ## 📫 联系我
 
-欢迎聊 AI 产品、数据驱动工具和跨学科问题：**[13701813467@163.com](mailto:13701813467@163.com)**
+如果你在招 AI 产品经理，或者想聊聊上面哪个项目，欢迎发邮件给我：**[13701813467@163.com](mailto:13701813467@163.com)**
 
 <img src="assets/footer.svg" width="100%" alt="" />
