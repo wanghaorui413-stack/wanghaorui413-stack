@@ -12,7 +12,7 @@
 
 我在华东师范大学读物理海洋学硕士，2027 届，正在准备秋招。
 
-平时学习和做科研，总会遇到一些"要是有个工具就好了"的时刻。于是我开始用 vibecoding 给自己做工具：雅思写作练习没有趁手的地方，就做了一个写作台；备考和科研总是顾此失彼，并且还容易错过测评、AI面、真人面等信息，因此我搭建了一个人工作台用于分配我的时间处理多项任务并提醒我待办事宜。
+平时学习和做科研，总会遇到一些"要是有个工具就好了"的时刻。于是我开始用 vibecoding 给自己做工具：雅思写作练习没有趁手的地方，就做了一个写作台；备考和科研总是顾此失彼，并且还容易错过测评、AI面、真人面等信息，因此我搭建了一个个人工作台用于分配我的时间处理多项任务并提醒我待办事宜。
 
 除此以外我还搭建了一些工具用于提高生活、工作和学习的效率。
 
@@ -36,6 +36,23 @@
 `Python` `FastAPI` `Streamlit` `FAISS` `LangChain` `Docker`
 
 <sub>目前用的是 mock 数据，评测结果不代表真实用户表现。</sub>
+
+### 🗓️ [Self Work Station](https://github.com/wanghaorui413-stack/self-work-station) · 求职日程工作台
+
+<table>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/wanghaorui413-stack/self-work-station/main/docs/screenshots/01-today.png" alt="今天：招聘事项先占时间，剩下的分给各个方向" /></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/wanghaorui413-stack/self-work-station/main/docs/screenshots/03-recruit.png" alt="招聘：邮件同步来的面试和测评" /></td>
+  </tr>
+</table>
+
+秋招时一边备考、做科研，一边跟进好几家公司的面试和测评，邀约散在邮件里，很容易错过。这个桌面工作台每天两次读招聘邮件，把面试、测评变成日程并按时提醒；剩下的空档，再按我给每个方向定的最低时间和权重排好。
+
+邮件里的时间写法很乱，“收到后 72 小时内”“下周另行通知”，规则抓不准，所以交给 Claude 提取。但模型偶尔会把时间编错，我要求它引用邮件原文，程序再核对原文确实在邮件里；时间不明确的不进日程，先标出来让我确认。面试会连同准备和路上的时间一起预留，测评排进截止前最早的空档。
+
+`Electron` `Node.js` `JavaScript` `Claude`
+
+<sub>我自己每天在用；截图用的是演示数据，公司名都是虚构的。</sub>
 
 ### 🌊 [Chlorophyll Lab](projects/chlorophyll-lab) · 叶绿素 a 浓度研究
 
@@ -66,17 +83,15 @@
 
 <sub>截图里的照片是示意图。</sub>
 
-### 🧩 两个顺手做的小工具
+### 🧩 顺手做的小工具
 
 <table>
   <tr>
     <td width="50%" valign="top">
       <img src="https://raw.githubusercontent.com/wanghaorui413-stack/IELTS-Writing/main/assets/screenshots/01-dashboard.png" alt="IELTS Writing Coach 写作工作台" />
-      <p><a href="https://github.com/wanghaorui413-stack/IELTS-Writing"><b>IELTS Writing Coach</b></a><br />备考雅思时做的写作工作台。选题、写前提纲、限时写作和自查放在同一个页面里，写的时候就能看到词数、连接词和常见语法错误的提醒。</p>
     </td>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/wanghaorui413-stack/self-work-station/main/docs/screenshots/01-overview.png" alt="Daily Balance Planner 每日计划" />
-      <p><a href="https://github.com/wanghaorui413-stack/self-work-station"><b>Daily Balance Planner</b></a><br />同时备考和做科研，经常一整天只顾一头。它先给每个任务留出最低时间，剩下的按权重分配，再用近 7 天的记录找出总被跳过的那一项。</p>
+      <p><a href="https://github.com/wanghaorui413-stack/IELTS-Writing"><b>IELTS Writing Coach</b></a><br />备考雅思时做的写作工作台。选题、写前提纲、限时写作和自查放在同一个页面里，写的时候就能看到词数、连接词和常见语法错误的提醒。</p>
     </td>
   </tr>
 </table>
