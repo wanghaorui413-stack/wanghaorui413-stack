@@ -82,7 +82,14 @@ def inspect_product(path):
         }
 
 
-def write_acolite_settings(input_path, output, limit):
+ACOLITE_DEFAULT_WATER_THRESHOLD = 0.0215
+
+
+def write_acolite_settings(input_path, output, limit, water_threshold=ACOLITE_DEFAULT_WATER_THRESHOLD):
+    # 非水体判定为 rhot_1600 > 阈值。高气溶胶景的路径辐射会把水面 rhot_1600 抬过默认值，
+    # 需按该景水/陆直方图另定阈值，并记录在溯源中。
+    if not np.isfinite(water_threshold) or not 0 < water_threshold < 0.1:
+        raise ValueError("水体SWIR阈值须在(0,0.1)内")
     if (
         len(limit) != 4
         or not all(np.isfinite(limit))
@@ -106,6 +113,8 @@ def write_acolite_settings(input_path, output, limit):
                 "output_xy=True",
                 "netcdf_projection=True",
                 "l2w_mask=True",
+                "l2w_mask_wave=1600",
+                f"l2w_mask_threshold={water_threshold}",
                 "l2r_export_geotiff=False",
                 "l2w_export_geotiff=False",
             ]
@@ -117,7 +126,7 @@ def write_acolite_settings(input_path, output, limit):
     return path
 
 
-def correct(processor, input_path, output, limit, timeout=3600):
+def correct(processor, input_path, output, limit, timeout=3600, water_threshold=ACOLITE_DEFAULT_WATER_THRESHOLD):
     processor, input_path, output = Path(processor), Path(input_path), Path(output)
     if not processor.is_file() or not input_path.exists():
         raise FileNotFoundError("需要已下载的官方ACOLITE处理器和真实Sentinel-2 L1C产品")
@@ -142,7 +151,7 @@ def correct(processor, input_path, output, limit, timeout=3600):
             else:
                 shutil.copy2(input_path, actual_input)
         processing = native / "output"
-        settings = write_acolite_settings(actual_input, processing, limit)
+        settings = write_acolite_settings(actual_input, processing, limit, water_threshold)
         command = [str(actual_processor), "--cli", "--settings", str(settings)]
         with (stage / "processor.log").open("w", encoding="utf-8") as log:
             try:
@@ -184,6 +193,7 @@ def correct(processor, input_path, output, limit, timeout=3600):
                 "input_sha256": sha256(input_path) if input_path.is_file() else None,
                 "input_manifest_sha256": sha256(stage / "input_manifest.json"),
                 "limit": list(limit),
+                "water_mask_rhot_1600_threshold": water_threshold,
                 "resolution_m": 20,
                 "rsr_version": "base/unversioned",
                 "command": command,
@@ -286,6 +296,7 @@ def predict_raster(input_path, model_dir, output_dir, quality_path=None):
                     "unit": "ug/L",
                     "validation_status": model.card["validation_status"],
                     "mask": "finite nonnegative seven-band Rrs and l2_flags==0",
+                    "acolite_water_threshold_rhot_1600": float(attrs.get("l2w_mask_threshold", 0.0215)),
                     "physical_conversion": "Rrs unchanged; rhow divided by pi; rhos/rhot rejected",
                 },
             )

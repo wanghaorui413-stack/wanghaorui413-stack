@@ -137,11 +137,11 @@ def make_handler(predictor, read_timeout=READ_TIMEOUT_SECONDS, max_inflight=2):
                     self.send(200, (predictor.run / "report.html").read_bytes(), "text/html; charset=utf-8")
                 elif (
                     self.path == "/satellite-report"
-                    and (ROOT / "predictions/hanriver_s2b_20240531/report.html").exists()
+                    and (ROOT / "predictions/hanriver_s2b_20240531_swir040/report.html").exists()
                 ):
                     self.send(
                         200,
-                        (ROOT / "predictions/hanriver_s2b_20240531/report.html").read_bytes(),
+                        (ROOT / "predictions/hanriver_s2b_20240531_swir040/report.html").read_bytes(),
                         "text/html; charset=utf-8",
                     )
                 elif self.path == "/health":

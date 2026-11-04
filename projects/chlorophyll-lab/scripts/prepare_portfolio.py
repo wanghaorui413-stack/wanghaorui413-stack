@@ -17,7 +17,7 @@ def main():
     for name, evidence in manifest["artifacts"].items():
         assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == evidence["sha256"], name
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    satellite = ROOT / "predictions/hanriver_s2b_20240531"
+    satellite = ROOT / "predictions/hanriver_s2b_20240531_swir040"
     for name in ["report.html", "chlorophyll_ug_l.tif", "valid_water_mask.tif", "product_summary.json"]:
         shutil.copy2(satellite / name, OUTPUT / name)
     shutil.copy2(ROOT / "dist/chlorophyll_lab-0.2.0-py3-none-any.whl", OUTPUT)
@@ -38,12 +38,12 @@ code{overflow-wrap:anywhere}footer{font-size:14px;color:#4d6e64}@media(max-width
 <h1>Chlorophyll Lab<br>从实测光谱到真实卫星影像</h1>
 <p>面向个人科研与求职展示的叶绿素 a 浓度研究工程。将公开真实数据、神经网络实验、模型发布与卫星栅格处理连接成可复现的本地流程。</p>
 <nav aria-label="项目资料"><a href="report.html">查看真实卫星处理报告</a><a href="chlorophyll_lab-0.2.0-py3-none-any.whl" download>下载 Python 安装包</a></nav></header>
-<section class="notice"><h2>结果的适用范围</h2><p>真实 L1C 处理链路已经执行；卫星浓度尚未经过独立实测匹配验证。严格质控只保留 124 / 35,055 个像元（0.35%），其余为 NoData。此示例不能代表完整区域水质。</p></section>
-<div class="grid"><div class="stat"><strong>3,385</strong>GLORIA 真实配对样本</div><div class="stat"><strong>32 / 32</strong>本机工程测试通过</div><div class="stat"><strong>20 m</strong>真实卫星输出网格</div></div>
+<section class="notice"><h2>结果的适用范围</h2><p>真实 L1C 处理链路已经执行；卫星浓度尚未经过独立实测匹配验证。该景气溶胶较重（AOT₅₅₀≈0.44），ACOLITE 默认 SWIR 水体阈值 0.0215 会把整段江面判为非水体；按本景水/陆 1610 nm 直方图调至 0.04 后，4,775 / 35,055 个像元有效（13.6%，约占水面 62%）。桥梁、岸边混合像元与质量标记像元为 NoData。</p></section>
+<div class="grid"><div class="stat"><strong>3,385</strong>GLORIA 真实配对样本</div><div class="stat"><strong>33 / 33</strong>本机工程测试通过</div><div class="stat"><strong>20 m</strong>真实卫星输出网格</div></div>
 <section><h2>两条建模与处理路线</h2><p><b>原位光谱：</b>GLORIA Rrs → 来源与水体分组隔离 → 训练集预处理 → MLP / 1D CNN 与传统基线 → 验证水体宏平均对数误差选模 → 冻结评估 → 独立模型包。</p>
 <p><b>卫星影像：</b>Sentinel-2 L1C → 官方 ACOLITE 水体大气校正与残余反光校正 → 七波段水离 Rrs → 专用随机森林 → 浓度 GeoTIFF、有效掩膜与来源报告。卫星模型以真实响应函数卷积的 GLORIA 光谱训练。</p>
 <p>卫星宽波段没有被补成 71 列冒充原位神经网络输入；L2A 地表反射率没有被当作 Rrs。</p></section>
-<section><h2>工程实现与验证</h2><ul><li>Python 可安装包与统一 CLI；数据、模型和预测记录版本及哈希。</li><li>暂存与原子提交支持失败重试；冻结预测可重新生成报告。</li><li>独立模型包、本地 CSV 批量预测、页面状态失效保护与结构化错误。</li><li>Windows / Python 3.12 / CPU 下 32 项测试通过；安装包在源码目录外验证，第三方运行库复用本机环境。</li></ul>
+<section><h2>工程实现与验证</h2><ul><li>Python 可安装包与统一 CLI；数据、模型和预测记录版本及哈希。</li><li>暂存与原子提交支持失败重试；冻结预测可重新生成报告。</li><li>独立模型包、本地 CSV 批量预测、页面状态失效保护与结构化错误。</li><li>Windows / Python 3.12 / CPU 下 33 项测试通过；安装包在源码目录外验证，第三方运行库复用本机环境。</li></ul>
 <p>原位主模型按验证集规则选中 MLP。260 条开发保留样本上的总体 log10 RMSE 为 0.2387、RMSE 为 51.69 μg/L。这是历史开发评估，不是新的外部盲测或卫星精度，也不表示所有指标均优于随机森林。</p></section>
 <section><h2>真实示例与可下载结果</h2><p>韩国汉江 ROI · Sentinel-2B · 2024-05-31 · EPSG:32652 · ACOLITE 20260421.0。影像公开源对象通过 MD5 核查，校正与推理均在本机实际执行。</p>
 <nav><a href="chlorophyll_ug_l.tif" download>浓度 GeoTIFF</a><a href="valid_water_mask.tif" download>有效像元掩膜</a><a href="product_summary.json">产物统计与校验值</a></nav>

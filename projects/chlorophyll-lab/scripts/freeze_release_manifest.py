@@ -14,9 +14,9 @@ def main():
         "releases/gloria_engineering_v2/model_card.json",
         "releases/S2A_MSI_gloria_v2/model.json",
         "releases/S2B_MSI_gloria_v2/model.json",
-        "predictions/hanriver_s2b_20240531/chlorophyll_ug_l.tif",
-        "predictions/hanriver_s2b_20240531/valid_water_mask.tif",
-        "predictions/hanriver_s2b_20240531/provenance.json",
+        "predictions/hanriver_s2b_20240531_swir040/chlorophyll_ug_l.tif",
+        "predictions/hanriver_s2b_20240531_swir040/valid_water_mask.tif",
+        "predictions/hanriver_s2b_20240531_swir040/provenance.json",
         "docs/engineering/RELEASE-ACCEPTANCE.md",
     ]
     write_json(
@@ -26,7 +26,7 @@ def main():
             "source": source_identity(),
             "verification": {
                 "platform": "Windows / Python 3.12 / CPU",
-                "unittest_passed": 32,
+                "unittest_passed": 33,
                 "unittest_skipped": 0,
                 "wheel_install_outside_source": True,
                 "wheel_third_party_runtime_reused": True,

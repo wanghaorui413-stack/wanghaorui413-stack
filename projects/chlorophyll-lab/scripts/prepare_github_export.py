@@ -7,7 +7,7 @@ root = Path(__file__).resolve().parents[1]
 files = []
 for directory, suffixes in [("chlorophyll", {".py", ".html"}), ("src", {".py"}), ("tests", {".py"}), ("scripts", {".py"}), ("configs", {".json"}), ("web", {".html"})]:
     files.extend(p for p in (root / directory).rglob("*") if p.suffix in suffixes and "__pycache__" not in p.parts)
-files.extend(root / name for name in ["pyproject.toml", ".gitignore", "GLOSSARY.md", "requirements-engineering-lock.txt", "docs/engineering/OPERATIONS.md", "docs/engineering/RELEASE-ACCEPTANCE.md", "predictions/hanriver_s2b_20240531/product_summary.json", "predictions/hanriver_s2b_20240531/report.html"])
+files.extend(root / name for name in ["pyproject.toml", ".gitignore", "GLOSSARY.md", "requirements-engineering-lock.txt", "docs/engineering/OPERATIONS.md", "docs/engineering/RELEASE-ACCEPTANCE.md", "predictions/hanriver_s2b_20240531_swir040/product_summary.json", "predictions/hanriver_s2b_20240531_swir040/report.html"])
 entries = []
 for path in files:
     relative = path.relative_to(root).as_posix()
@@ -48,7 +48,7 @@ Python 3.12 / Windows / CPU 已实测。原始数据与处理器通过脚本获�
 
 原位数据保留3,385条：训练2,811、验证314、开发保留260；验证选中MLP。保留集总体log10 RMSE=0.2387、RMSE=51.69 μg/L，属于历史开发评估，不是新的外部盲测，也不表示所有指标优于随机森林。
 
-真实卫星示例：2024-05-31韩国汉江ROI，S2B，EPSG:32652，20米。严格质控仅124/35,055像元有效（0.35%）；卫星浓度尚未经独立实测匹配验证，不能当作完整区域水质图。卫星宽波段不补成71列套用原位CNN，L2A地表反射率不当作Rrs。
+真实卫星示例：2024-05-31韩国汉江ROI，S2B，EPSG:32652，20米。按该景水/陆SWIR直方图将ACOLITE水体阈值由0.0215调至0.04后，4,775/35,055像元有效（13.6%，约占水面62%）；卫星浓度尚未经独立实测匹配验证，不能当作完整区域水质图。卫星宽波段不补成71列套用原位CNN，L2A地表反射率不当作Rrs。
 
 [真实影像报告HTML（下载后打开）](example/report.html) · [产物统计](example/product_summary.json) · [验收说明](docs/engineering/RELEASE-ACCEPTANCE.md)
 

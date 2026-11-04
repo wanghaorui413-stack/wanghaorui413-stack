@@ -10,6 +10,32 @@ from .data import read_prediction_csv
 from .metrics import invert_target
 from .models import create_model
 
+# 分组交叉验证中，神经网络/线性模型对超出训练光谱范围的输入会外推到10^6 μg/L。
+# 越界样本只输出空值与原因，不输出数值；宽容带按训练范围的比例给出。
+# 光谱在范围内时神经网络仍可能失控，故再与随机森林（输出受训练标签约束）对照。
+BAND_RANGE_MARGIN = 0.05
+TARGET_RANGE_FACTOR = 2.0
+REFERENCE_MAX_LOG10_GAP = 1.0
+NETWORKS = ["mlp", "cnn"]
+
+
+def domain_check(x, predictions, prep, reference=None):
+    """返回每条样本的拦截原因（空字符串表示通过）。reference 为随机森林预测，可选。"""
+    span = prep["train_max"] - prep["train_min"]
+    low, high = prep["train_min"] - BAND_RANGE_MARGIN * span, prep["train_max"] + BAND_RANGE_MARGIN * span
+    bands = ((x < low) | (x > high)).any(axis=1)
+    target = (predictions < prep["target_min"] / TARGET_RANGE_FACTOR) | (
+        predictions > prep["target_max"] * TARGET_RANGE_FACTOR
+    )
+    disagree = np.zeros(len(x), dtype=bool)
+    if reference is not None:
+        disagree = np.abs(np.log10(predictions) - np.log10(reference)) > REFERENCE_MAX_LOG10_GAP
+    reasons = np.full(len(x), "", dtype=object)
+    reasons[disagree] = "disagrees_with_random_forest"
+    reasons[target] = "prediction_outside_training_range"
+    reasons[bands] = "spectrum_outside_training_range"
+    return reasons
+
 
 class Predictor:
     def __init__(self, run="gloria_v1", package_path=None):
@@ -89,6 +115,17 @@ class Predictor:
         result["outside_target_training_range"] = (predictions[chosen] < self.prep["target_min"]) | (
             predictions[chosen] > self.prep["target_max"]
         )
+        reference = None
+        if chosen in NETWORKS:
+            reference = predictions.get("random_forest")
+            if reference is None:
+                reference = self.all_predictions(x, ["random_forest"])["random_forest"]
+        reasons = domain_check(x, predictions[chosen], self.prep, reference)
+        rejected = reasons != ""
+        result["status"] = np.where(rejected, "rejected", "ok")
+        result["rejection_reason"] = reasons
+        value_columns = ["chlorophyll_ug_l", *[f"{name}_ug_l" for name in predictions]]
+        result.loc[rejected, value_columns] = np.nan
         result["model_instance_sha256"] = self.instance_id
         result["input_sha256"] = hashlib.sha256(text.encode("utf-8")).hexdigest()
         result["generated_at_utc"] = datetime.now(timezone.utc).isoformat()
@@ -105,4 +142,7 @@ def predict_file(run, input_path, output_path, model="selected", package_path=No
     output_path.parent.mkdir(parents=True, exist_ok=True)
     result.to_csv(output_path, index=False)
     print(result[["sample_id", "selected_model", "chlorophyll_ug_l", "max_abs_z"]].to_string(index=False))
+    rejected = int((result.status == "rejected").sum())
+    if rejected:
+        print(f"已拦截 {rejected} 条越出训练范围的样本，浓度留空，原因见 rejection_reason 列")
     print(f"Saved {len(result)} predictions: {output_path.resolve()}")

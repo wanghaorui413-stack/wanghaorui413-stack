@@ -19,5 +19,5 @@ result = json.loads(request("POST", "/api/predict", {"csv": example["csv"], "mod
 assert len(result["rows"]) == 5
 assert result["rows"][0]["model_instance_sha256"]
 report = request("GET", "/satellite-report").decode("utf-8")
-assert "124 / 35055" in report
+assert "4775 / 35055" in report
 print("Live engineering service: five real predictions + satellite report + request IDs PASS")

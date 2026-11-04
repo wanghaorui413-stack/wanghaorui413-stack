@@ -54,6 +54,12 @@ def write_satellite_report(output_dir, context_image=None):
             "mask_sha256": sha256(directory / "valid_water_mask.tif"),
         }
     write_json(directory / "product_summary.json", stats)
+    threshold = provenance.get("acolite_water_threshold_rhot_1600", 0.0215)
+    threshold_note = (
+        "非水体判定使用ACOLITE默认阈值 rhot_1600 &gt; 0.0215。"
+        if abs(threshold - 0.0215) < 1e-9
+        else f"本景气溶胶较重，水面rhot_1600普遍高于ACOLITE默认0.0215；按本景水/陆直方图改用 {threshold:g}，其余质量标记不变。"
+    )
     context = ""
     if context_image and Path(context_image).exists():
         encoded = base64.b64encode(Path(context_image).read_bytes()).decode()
@@ -63,6 +69,6 @@ def write_satellite_report(output_dir, context_image=None):
 <h1>Sentinel-2B · 真实L1C到浓度栅格</h1><p>汉江ROI · 20米 · L1C → ACOLITE 20260421.0 → 七波段专用模型 → GeoTIFF</p>
 <section class="notice"><b>处理链路已实际运行；卫星精度尚未经独立实测匹配验证。</b><p>严格质量筛选保留 {stats["valid_pixels"]} / {stats["total_pixels"]} 像元（{stats["coverage_fraction"]:.2%}）。其余像元为NoData，不能插值填充后当作完整水质图。</p></section>
 <div class="grid">{context}<section><h2>仅有效像元的浓度估计</h2>{image}<p>灰色：不输出估计。色标由蓝绿（{low:.3f}）到橙红（{high:.3f} μg/L）；中位数 {stats["median_ug_l"]:.3f} μg/L。</p></section></div>
-<section><h2>核验与复现</h2><p>投影：{html.escape(stats["crs"])}，像元20×20米。采用默认ACOLITE质量标记为0、七波段有限且非负的像元。未为增加覆盖率放宽质量标准。</p><p>模型来自GLORIA实测光谱按S2B实际响应函数积分后的独立随机森林；原位71波段CNN未用于填充卫星输入。此报告不提供卫星浓度实测误差或置信区间。</p><p>逐像元值见 valid_pixel_predictions.csv；完整来源、质量和模型哈希见 provenance.json；GeoTIFF校验值见 product_summary.json。</p><p>输入：{html.escape(Path(provenance["input"]).name)}</p></section></html>"""
+<section><h2>核验与复现</h2><p>投影：{html.escape(stats["crs"])}，像元20×20米。{threshold_note}采用ACOLITE质量标记为0、七波段有限且非负的像元。</p><p>模型来自GLORIA实测光谱按S2B实际响应函数积分后的独立随机森林；原位71波段CNN未用于填充卫星输入。此报告不提供卫星浓度实测误差或置信区间。</p><p>逐像元值见 valid_pixel_predictions.csv；完整来源、质量和模型哈希见 provenance.json；GeoTIFF校验值见 product_summary.json。</p><p>输入：{html.escape(Path(provenance["input"]).name)}</p></section></html>"""
     (directory / "report.html").write_text(page, encoding="utf-8")
     return stats

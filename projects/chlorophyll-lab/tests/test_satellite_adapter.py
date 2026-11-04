@@ -41,3 +41,8 @@ class SatelliteContractTests(unittest.TestCase):
             self.assertIn("s2_target_res=20", settings)
             self.assertIn("netcdf_projection=True", settings)
             self.assertIn("rsr_version=None", settings)
+            self.assertIn("l2w_mask_threshold=0.0215", settings)
+            raised = write_acolite_settings("x.zip", directory, [31, 120, 31.1, 120.1], 0.04).read_text()
+            self.assertIn("l2w_mask_threshold=0.04", raised)
+            with self.assertRaises(ValueError):
+                write_acolite_settings("x.zip", directory, [31, 120, 31.1, 120.1], 0.5)

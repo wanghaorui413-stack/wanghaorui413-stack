@@ -56,6 +56,12 @@ def _main():
     correct.add_argument("--input", type=Path, required=True)
     correct.add_argument("--output", type=Path, required=True)
     correct.add_argument("--limit", nargs=4, type=float, required=True, metavar=("SOUTH", "WEST", "NORTH", "EAST"))
+    correct.add_argument(
+        "--water-threshold",
+        type=float,
+        default=0.0215,
+        help="ACOLITE非水体判定的rhot_1600阈值；高气溶胶景按水/陆直方图调高",
+    )
     raster = operations.add_parser("predict", help="导出20m浓度GeoTIFF与质量掩膜")
     raster.add_argument("--input", type=Path, required=True)
     raster.add_argument("--model", type=Path, required=True)
@@ -135,7 +141,7 @@ def _main():
         if args.operation == "inspect":
             print(inspect_product(args.input))
         elif args.operation == "correct":
-            print(correct(args.processor, args.input, args.output, args.limit))
+            print(correct(args.processor, args.input, args.output, args.limit, water_threshold=args.water_threshold))
         else:
             print(predict_raster(args.input, args.model, args.output, args.quality))
 

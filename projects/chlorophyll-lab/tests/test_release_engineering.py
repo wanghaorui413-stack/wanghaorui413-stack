@@ -24,7 +24,7 @@ class StandaloneReleaseTests(unittest.TestCase):
                 ym=1.0,
                 ys=1.0,
                 train_min=np.zeros(n),
-                train_max=np.ones(n),
+                train_max=np.full(n, 0.1),
                 target_min=1.0,
                 target_max=100.0,
             )
@@ -49,3 +49,28 @@ class StandaloneReleaseTests(unittest.TestCase):
             self.assertIsNone(predictor.baselines)
             with self.assertRaises(ValueError):
                 predictor.from_csv(text, "not_a_model")
+            self.assertEqual(result.status.iloc[0], "ok")
+            # 越出训练光谱范围（0–0.1 加 5% 宽容带）：保留行但不给浓度
+            outside = text + "00124," + ",".join(["0.5"] * n) + "\n"
+            rejected = predictor.from_csv(outside).iloc[1]
+            self.assertEqual(rejected.status, "rejected")
+            self.assertEqual(rejected.rejection_reason, "spectrum_outside_training_range")
+            self.assertTrue(np.isnan(rejected.chlorophyll_ug_l))
+
+    def test_out_of_range_prediction_is_rejected(self):
+        from chlorophyll.inference import domain_check
+
+        n = len(FEATURES)
+        prep = {
+            "train_min": np.zeros(n),
+            "train_max": np.full(n, 0.1),
+            "target_min": np.array(1.0),
+            "target_max": np.array(100.0),
+        }
+        x = np.full((3, n), 0.05)
+        x[1, 3] = 0.104  # 在宽容带内
+        reasons = domain_check(x, np.array([10.0, 10.0, 1e6]), prep)
+        self.assertEqual(reasons.tolist(), ["", "", "prediction_outside_training_range"])
+        # 范围内但与随机森林相差超过10倍
+        reasons = domain_check(x, np.array([10.0, 90.0, 10.0]), prep, reference=np.array([20.0, 5.0, 10.0]))
+        self.assertEqual(reasons.tolist(), ["", "disagrees_with_random_forest", ""])
